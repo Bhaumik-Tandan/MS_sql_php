@@ -23,11 +23,16 @@ class Data_table extends Database
   function print_table()
   {
     $this->connect();
-    $this->query_string="select * from $this->table_name";
+    $this->query_string = "select * from $this->table_name";
     $this->query();
 
-    echo "<center><h1>$this->name</h1><table>";
-
+    echo "<center><h1>$this->name</h1>";
+    if(!$this->stmt)
+    {
+      echo "<br><br><br><h4>Data not available</h4>";
+      return;
+    }
+    echo "<table>";
     $this->print_heading();
     $this->print_rows();
 
@@ -40,13 +45,16 @@ class Data_table extends Database
       echo "<th>$h</th>";
     echo "</tr>";
   }
-  
+
   function print_rows()
   {
     while ($row = sqlsrv_fetch_array($this->stmt, SQLSRV_FETCH_ASSOC)) {
       echo "<tr>";
       foreach ($row as $r)
-        echo "<td>" . $r . "</td>";
+        if ($r)
+          echo "<td>" . $r . "</td>";
+        else
+          echo "<td>" . "Not Available" . "</td>";
       echo "</tr>";
     }
   }
