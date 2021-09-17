@@ -1,4 +1,4 @@
 <?php
 include '../make_class.php';
-make_class("warehose","Warehouse","ID", "Address", "Phone Number");
+make_class("raw_material","Raw Material","Name","Price","Supplier","Category ID");
 ?>

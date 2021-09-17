@@ -8,25 +8,34 @@
 </style>
 
 <?php
+use parallel\Events\Event\Type;
 include 'database.php';
 class Data_table extends Database
 {
-  private $table_name;
-  private $name;
-  private $heading;
-  function __construct($table_name, $name, $heading)
+  protected $table_name;
+  protected $name;
+  protected $heading;
+  function __construct($table_name, $name, $heading,$fields=array("*"))
   {
     $this->table_name = $table_name;
     $this->name = $name;
     $this->heading = $heading;
+    $this->fields = $fields;
   }
-  function print_table()
+
+  function run_query()
   {
     $this->connect();
-    $this->query_string = "select * from $this->table_name";
+    $this->query_string = "select ".implode(",",$this->fields)." from $this->table_name";
     $this->query();
+  }
+
+  function print_table()
+  {
+    $this->run_query();
 
     echo "<center><h1>$this->name</h1>";
+    
     if(!$this->stmt)
     {
       echo "<br><br><br><h4>Data not available</h4>";
@@ -51,7 +60,9 @@ class Data_table extends Database
     while ($row = sqlsrv_fetch_array($this->stmt, SQLSRV_FETCH_ASSOC)) {
       echo "<tr>";
       foreach ($row as $r)
-        if ($r)
+      if(gettype($r)=="object")
+      echo "<td>".$r->format('d-m-y')."</td>";
+      else if ($r)
           echo "<td>" . $r . "</td>";
         else
           echo "<td>" . "Not Available" . "</td>";

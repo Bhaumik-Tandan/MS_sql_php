@@ -12,6 +12,8 @@ function connect()
 
 function query()
 {
+    if(empty($GLOBALS['conn']))
+    $this->connect();
     $this->stmt= sqlsrv_query($GLOBALS['conn'],$this->query_string);
 }
 }
